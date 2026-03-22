@@ -20,8 +20,8 @@ function styleMarker(element: HTMLButtonElement, active: boolean, dense: boolean
   element.style.width = `${size}px`
   element.style.height = `${size}px`
   element.style.borderRadius = "0"
-  element.style.border = active ? "2px solid #111111" : "2px solid #d4d4d8"
-  element.style.background = active ? "#111111" : "#ffffff"
+  element.style.border = active ? "1.5px solid #a1a1aa" : "1.5px solid #e4e4e7"
+  element.style.background = "#ffffff"
   element.style.display = "flex"
   element.style.alignItems = "center"
   element.style.justifyContent = "center"
@@ -55,7 +55,7 @@ function setMarkerContent(
     fallback.style.fontSize = dense ? (active ? "10px" : "9px") : active ? "11px" : "10px"
     fallback.style.fontWeight = "700"
     fallback.style.lineHeight = "1"
-    fallback.style.color = active ? "#ffffff" : "#111111"
+    fallback.style.color = "#111111"
     element.appendChild(fallback)
   })
 
@@ -123,7 +123,7 @@ export function MapShell({ companies, selectedCompany, onSelectCompany }: MapShe
       element.setAttribute("aria-label", company.name)
       element.style.cursor = "pointer"
       element.style.padding = "0"
-      element.style.background = company.slug === selectedCompany.slug ? "#111111" : "#ffffff"
+      element.style.background = "#ffffff"
       element.style.outline = "none"
       styleMarker(element, company.slug === selectedCompany.slug, dense)
       setMarkerContent(element, company, company.slug === selectedCompany.slug, dense)
