@@ -26,27 +26,6 @@ export type Company = {
   featuredTier: FeaturedTier
 }
 
-export type QuickFilterId =
-  | "all"
-  | "hot"
-  | "core"
-  | "agents"
-  | "infra"
-  | "consumer"
-
-export const QUICK_FILTERS: Array<{
-  id: QuickFilterId
-  label: string
-  description: string
-}> = [
-  { id: "all", label: "All scene", description: "See the whole curated map." },
-  { id: "hot", label: "Hot right now", description: "The names getting talked about." },
-  { id: "core", label: "Big names", description: "Start with the must-have companies." },
-  { id: "agents", label: "Agents", description: "Operator-style companies and AI workers." },
-  { id: "infra", label: "Infra", description: "The companies powering the stack." },
-  { id: "consumer", label: "Consumer", description: "Products with clear user-facing stories." },
-]
-
 // Curated, not exhaustive: these companies are chosen to make the current
 // San Francisco AI scene legible and enjoyable to browse in a map format.
 export const COMPANIES: Company[] = [

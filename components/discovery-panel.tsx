@@ -3,12 +3,10 @@
 import { Search } from "lucide-react"
 
 import { CompanyCard } from "@/components/company-card"
-import { QuickFilters } from "@/components/quick-filters"
 import {
   COMPANY_CATEGORIES,
   type Company,
   type CompanyCategory,
-  type QuickFilterId,
 } from "@/lib/companies"
 import { cn } from "@/lib/utils"
 
@@ -17,8 +15,6 @@ type DiscoveryPanelProps = {
   selectedCompany: Company
   search: string
   onSearchChange: (value: string) => void
-  quickFilter: QuickFilterId
-  onQuickFilterChange: (value: QuickFilterId) => void
   category: CompanyCategory | "All"
   onCategoryChange: (value: CompanyCategory | "All") => void
   onSelectCompany: (slug: string) => void
@@ -29,8 +25,6 @@ export function DiscoveryPanel({
   selectedCompany,
   search,
   onSearchChange,
-  quickFilter,
-  onQuickFilterChange,
   category,
   onCategoryChange,
   onSelectCompany,
@@ -54,8 +48,6 @@ export function DiscoveryPanel({
           </p>
         </div>
       </div>
-
-      <QuickFilters value={quickFilter} onChange={onQuickFilterChange} />
 
       <div className="space-y-4 border border-border bg-background p-4">
         <label className="block">

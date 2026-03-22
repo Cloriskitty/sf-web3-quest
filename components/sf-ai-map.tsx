@@ -5,13 +5,12 @@ import { useDeferredValue, useMemo, useState } from "react"
 import { CompanyCard } from "@/components/company-card"
 import { DiscoveryPanel } from "@/components/discovery-panel"
 import { MapShell } from "@/components/map-shell"
-import { COMPANIES, type CompanyCategory, type QuickFilterId } from "@/lib/companies"
+import { COMPANIES, type CompanyCategory } from "@/lib/companies"
 
 const featuredOrder = ["core", "hot", "scene"] as const
 
 export function SfAiMap() {
   const [search, setSearch] = useState("")
-  const [quickFilter, setQuickFilter] = useState<QuickFilterId>("all")
   const [category, setCategory] = useState<CompanyCategory | "All">("All")
   const [selectedSlug, setSelectedSlug] = useState("openai")
 
@@ -21,15 +20,6 @@ export function SfAiMap() {
     const query = deferredSearch.trim().toLowerCase()
 
     return [...COMPANIES]
-      .filter((company) => {
-        if (quickFilter === "hot") return company.featuredTier === "hot"
-        if (quickFilter === "core") return company.featuredTier === "core"
-        if (quickFilter === "agents") return company.category === "Agents"
-        if (quickFilter === "infra") return company.category === "Infra"
-        if (quickFilter === "consumer") return company.category === "Consumer AI"
-
-        return true
-      })
       .filter((company) => (category === "All" ? true : company.category === category))
       .filter((company) => {
         if (!query) {
@@ -57,7 +47,7 @@ export function SfAiMap() {
 
         return left.name.localeCompare(right.name)
       })
-  }, [category, deferredSearch, quickFilter])
+  }, [category, deferredSearch])
 
   const selectedCompany =
     filteredCompanies.find((company) => company.slug === selectedSlug) ??
@@ -76,8 +66,6 @@ export function SfAiMap() {
             selectedCompany={selectedCompany}
             search={search}
             onSearchChange={setSearch}
-            quickFilter={quickFilter}
-            onQuickFilterChange={setQuickFilter}
             category={category}
             onCategoryChange={setCategory}
             onSelectCompany={setSelectedSlug}
