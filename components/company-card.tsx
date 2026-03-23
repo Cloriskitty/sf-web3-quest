@@ -67,9 +67,17 @@ export function CompanyCard({
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="size-3.5" />
-              {company.neighborhood}
+              {company.locationLabel}
             </span>
             <span>Founded {company.founded}</span>
+            <a
+              href={company.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-2 hover:text-foreground hover:underline"
+            >
+              {company.sourceLabel}
+            </a>
           </div>
         </div>
       </div>
@@ -130,9 +138,17 @@ export function CompanyCard({
       <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <MapPin className="size-3.5" />
-          {company.neighborhood}
+          {company.locationLabel}
         </span>
         <span>Founded {company.founded}</span>
+        <a
+          href={company.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="underline-offset-2 hover:text-foreground hover:underline"
+        >
+          {company.sourceLabel}
+        </a>
       </div>
     </article>
   )

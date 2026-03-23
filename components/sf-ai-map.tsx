@@ -30,8 +30,9 @@ export function SfAiMap() {
           company.name,
           company.shortDescription,
           company.category,
-          company.neighborhood,
+          company.locationLabel,
           company.whyItMatters,
+          company.sourceLabel,
         ]
           .join(" ")
           .toLowerCase()

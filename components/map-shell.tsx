@@ -177,10 +177,10 @@ export function MapShell({ companies, selectedCompany, onSelectCompany }: MapShe
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-background/95 to-transparent" />
       <div className="pointer-events-none absolute top-4 left-4 max-w-sm border border-border bg-background px-4 py-3">
         <div className="text-[11px] font-semibold uppercase text-muted-foreground">
-          SF AI startup map
+          Verified SF AI map
         </div>
         <p className="mt-1 text-sm leading-6 text-foreground">
-          Curated for clarity, not full coverage. Use the filters to focus the map fast.
+          Only companies with a public, source-backed SF location are shown here.
         </p>
       </div>
       <div className="pointer-events-none absolute right-4 bottom-4 border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground">

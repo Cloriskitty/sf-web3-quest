@@ -56,8 +56,8 @@ export function DiscoveryPanel({
           </h1>
           <div className="text-sm text-muted-foreground">{companies.length} companies</div>
           <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            A clean, curated view of the companies shaping the current San Francisco AI
-            scene. Browse the map, filter the categories, and open the names that matter.
+            Only source-backed SF office locations are shown. Companies without a reliable
+            public location source stay out of the map until they are verified.
           </p>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function DiscoveryPanel({
           <div className="border border-dashed border-border bg-background p-6">
             <h3 className="text-base font-semibold text-foreground">No companies match that filter.</h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Clear the search or switch back to All scene to broaden the view.
+              Clear the search or switch back to All to broaden the view.
             </p>
           </div>
         )}

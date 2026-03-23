@@ -1,8 +1,3 @@
-import {
-  YC_SF_SEARCH_COMPANIES,
-  type DiscoveredCompany,
-} from "@/lib/yc-sf-companies"
-
 export const COMPANY_CATEGORIES = [
   "Core Labs",
   "Consumer AI",
@@ -25,291 +20,13 @@ export type Company = {
   shortDescription: string
   whyItMatters: string
   category: CompanyCategory
-  neighborhood: string
+  locationLabel: string
   coordinates: [number, number]
   founded: number
   featuredTier: FeaturedTier
   logoUrl?: string
-}
-
-type AnchorPoint = {
-  name: string
-  coordinates: [number, number]
-}
-
-const CATEGORY_ANCHORS: Record<CompanyCategory, AnchorPoint[]> = {
-  "Core Labs": [
-    { name: "Mission Bay", coordinates: [-122.3931, 37.7712] },
-    { name: "Financial District", coordinates: [-122.4014, 37.7918] },
-  ],
-  "Consumer AI": [
-    { name: "Mission District", coordinates: [-122.4191, 37.7595] },
-    { name: "Hayes Valley", coordinates: [-122.4244, 37.7767] },
-    { name: "North Beach", coordinates: [-122.4072, 37.8061] },
-    { name: "Duboce Triangle", coordinates: [-122.4361, 37.7699] },
-  ],
-  Devtools: [
-    { name: "SoMa", coordinates: [-122.4054, 37.783] },
-    { name: "South Beach", coordinates: [-122.3909, 37.7805] },
-    { name: "Civic Center", coordinates: [-122.4148, 37.7794] },
-    { name: "Mission Bay", coordinates: [-122.3922, 37.7698] },
-  ],
-  Infra: [
-    { name: "Mission Bay", coordinates: [-122.3914, 37.7708] },
-    { name: "Dogpatch", coordinates: [-122.3896, 37.7604] },
-    { name: "Financial District", coordinates: [-122.4017, 37.7937] },
-    { name: "Potrero Hill", coordinates: [-122.4043, 37.7594] },
-  ],
-  Agents: [
-    { name: "SoMa", coordinates: [-122.4032, 37.7854] },
-    { name: "Financial District", coordinates: [-122.4009, 37.7908] },
-    { name: "South Beach", coordinates: [-122.3907, 37.7808] },
-    { name: "Mission District", coordinates: [-122.4132, 37.7608] },
-  ],
-  "Vertical AI": [
-    { name: "Mission Bay", coordinates: [-122.3921, 37.7689] },
-    { name: "Jackson Square", coordinates: [-122.4015, 37.7962] },
-    { name: "Financial District", coordinates: [-122.4008, 37.7898] },
-    { name: "Potrero Hill", coordinates: [-122.4048, 37.7589] },
-  ],
-}
-
-const CONSUMER_TAGS = [
-  "consumer",
-  "social",
-  "social-media",
-  "social-network",
-  "gaming",
-  "search",
-  "chat",
-  "travel",
-  "education",
-  "ai-enhanced-learning",
-  "augmented-reality",
-  "video",
-  "no-code",
-]
-
-const INFRA_TAGS = [
-  "infrastructure",
-  "cloud-computing",
-  "api",
-  "apis",
-  "data-labeling",
-  "privacy",
-  "security",
-  "cybersecurity",
-  "edge-computing-semiconductors",
-  "aiops",
-]
-
-const DEVTOOLS_TAGS = [
-  "developer-tools",
-  "open-source",
-  "design-tools",
-  "devops",
-  "devsecops",
-  "monitoring",
-  "analytics",
-]
-
-const VERTICAL_TAGS = [
-  "healthcare",
-  "healthcare-it",
-  "health-tech",
-  "telemedicine",
-  "telehealth",
-  "biotech",
-  "biotechnology",
-  "drug-discovery",
-  "genomics",
-  "legal",
-  "legaltech",
-  "construction",
-  "architecture",
-  "manufacturing",
-  "industrial",
-  "supply-chain",
-  "logistics",
-  "insurance",
-  "lending",
-  "fintech",
-  "finops",
-  "restaurant-tech",
-  "sports-tech",
-  "market-research",
-  "compliance",
-  "robotics",
-  "hardware",
-]
-
-const AGENT_TAGS = [
-  "ai-assistant",
-  "workflow-automation",
-  "customer-service",
-  "customer-support",
-  "sales",
-  "recruiting",
-  "robotic-process-automation",
-  "conversational-ai",
-  "email",
-  "operations",
-]
-
-const DISCOVERED_HOT_SLUGS = new Set([
-  "a0-dev",
-  "blaxel",
-  "calltree",
-  "chamber",
-  "cyberdesk",
-  "dedalus-labs",
-  "emergent",
-  "hud",
-  "logical",
-  "onlook",
-  "roark",
-  "tinfoil",
-  "truffle-ai",
-])
-
-function hashString(value: string) {
-  let hash = 0
-
-  for (let index = 0; index < value.length; index += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(index)
-    hash |= 0
-  }
-
-  return Math.abs(hash)
-}
-
-function hasAnyTag(raw: DiscoveredCompany, keywords: string[]) {
-  const tags = raw.tags.map((tag) => tag.toLowerCase())
-
-  return keywords.some((keyword) => tags.includes(keyword))
-}
-
-function inferCompanyCategory(raw: DiscoveredCompany): CompanyCategory {
-  const text = `${raw.name} ${raw.shortDescription} ${raw.tags.join(" ")}`.toLowerCase()
-
-  if (hasAnyTag(raw, CONSUMER_TAGS)) {
-    return "Consumer AI"
-  }
-
-  if (hasAnyTag(raw, INFRA_TAGS)) {
-    return "Infra"
-  }
-
-  if (
-    hasAnyTag(raw, DEVTOOLS_TAGS) ||
-    /code|developer|frontend|design-to-code|sandbox|test|pull request|mobile app/.test(text)
-  ) {
-    return "Devtools"
-  }
-
-  if (hasAnyTag(raw, VERTICAL_TAGS)) {
-    return "Vertical AI"
-  }
-
-  if (hasAnyTag(raw, AGENT_TAGS) || /agent|copilot|assistant|automation/.test(text)) {
-    return "Agents"
-  }
-
-  return "Vertical AI"
-}
-
-function buildPlacement(raw: DiscoveredCompany, category: CompanyCategory) {
-  const anchors = CATEGORY_ANCHORS[category]
-  const hash = hashString(raw.slug)
-  const anchor = anchors[hash % anchors.length]
-  const lngOffset = ((((hash >> 8) % 1000) / 1000) - 0.5) * 0.015
-  const latOffset = ((((hash >> 18) % 1000) / 1000) - 0.5) * 0.011
-
-  return {
-    neighborhood: anchor.name,
-    coordinates: [
-      Number((anchor.coordinates[0] + lngOffset).toFixed(4)),
-      Number((anchor.coordinates[1] + latOffset).toFixed(4)),
-    ] as [number, number],
-  }
-}
-
-function buildWhyItMatters(category: CompanyCategory, raw: DiscoveredCompany) {
-  const tags = raw.tags.map((tag) => tag.toLowerCase())
-
-  if (tags.some((tag) => ["healthcare", "healthcare-it", "health-tech", "biotech"].includes(tag))) {
-    return "A strong signal that healthcare and biotech remain one of the busiest corners of SF AI."
-  }
-
-  if (tags.some((tag) => ["legal", "legaltech", "compliance", "regtech"].includes(tag))) {
-    return "A reminder that legal, compliance, and regulated workflows are major AI beachheads in SF."
-  }
-
-  if (tags.some((tag) => ["cybersecurity", "security", "privacy"].includes(tag))) {
-    return "Part of the trust, privacy, and security layer growing around the current AI stack."
-  }
-
-  if (tags.some((tag) => ["robotics", "hardware", "manufacturing", "industrial"].includes(tag))) {
-    return "Shows how tightly the SF AI scene now overlaps with robotics, hardware, and real-world systems."
-  }
-
-  if (tags.some((tag) => ["sales", "marketing", "customer-service", "customer-support", "recruiting"].includes(tag))) {
-    return "A good example of the agent wave moving into revenue and customer-facing workflows."
-  }
-
-  switch (category) {
-    case "Consumer AI":
-      return "Shows the more product-facing and consumer side of the SF AI scene."
-    case "Devtools":
-      return "One of the builder tools showing up in the current SF AI workflow stack."
-    case "Infra":
-      return "Represents the infrastructure and platform layer underneath the current SF AI boom."
-    case "Agents":
-      return "A clear example of AI agents getting packaged into concrete software and workflows."
-    case "Vertical AI":
-      return "A sign that much of SF AI is now moving into specific industries and operating workflows."
-    case "Core Labs":
-      return "One of the companies that defines the center of gravity for SF AI."
-  }
-}
-
-function normalizeWebsite(website: string, slug: string) {
-  const fallback = `https://www.ycombinator.com/companies/${slug}`
-
-  if (!website) {
-    return fallback
-  }
-
-  try {
-    const parsed = new URL(website)
-
-    if (parsed.protocol === "http:") {
-      parsed.protocol = "https:"
-    }
-
-    return parsed.toString()
-  } catch {
-    return fallback
-  }
-}
-
-function buildDiscoveredCompany(raw: DiscoveredCompany): Company {
-  const category = inferCompanyCategory(raw)
-  const placement = buildPlacement(raw, category)
-
-  return {
-    slug: raw.slug,
-    name: raw.name,
-    website: normalizeWebsite(raw.website, raw.slug),
-    shortDescription: raw.shortDescription,
-    whyItMatters: buildWhyItMatters(category, raw),
-    category,
-    neighborhood: placement.neighborhood,
-    coordinates: placement.coordinates,
-    founded: raw.founded,
-    featuredTier: DISCOVERED_HOT_SLUGS.has(raw.slug) ? "hot" : "scene",
-    logoUrl: raw.logoUrl,
-  }
+  sourceUrl: string
+  sourceLabel: string
 }
 
 export function getCompanyMonogram(company: Company) {
@@ -343,9 +60,9 @@ export function getCompanyLogoUrl(company: Company) {
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
 }
 
-// Curated, not exhaustive: keep the obvious anchors on the map, then extend
-// the scene with newer SF AI companies discovered from current YC listings.
-const CURATED_COMPANIES: Company[] = [
+// Only companies with a public, source-backed SF office location are included below.
+// The broader YC discovery list remains out of the map until exact location sources are added.
+export const COMPANIES: Company[] = [
   {
     slug: "openai",
     name: "OpenAI",
@@ -353,10 +70,13 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Frontier AI lab behind ChatGPT and a huge share of the current AI wave.",
     whyItMatters: "The obvious anchor on any map of modern SF AI.",
     category: "Core Labs",
-    neighborhood: "Mission Bay",
-    coordinates: [-122.3968, 37.7897],
+    locationLabel: "1455 3rd St, San Francisco",
+    coordinates: [-122.3887896, 37.7700459],
     founded: 2015,
     featuredTier: "core",
+    sourceUrl:
+      "https://cdn.openai.com/pdf/8e938d69-0b67-4994-b9ff-683733ed587e/openai-letter-minister-solomon.pdf",
+    sourceLabel: "OpenAI letterhead",
   },
   {
     slug: "anthropic",
@@ -365,10 +85,12 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Claude-maker focused on frontier models, safety, and serious product adoption.",
     whyItMatters: "If OpenAI is one pole of SF AI, Anthropic is the other.",
     category: "Core Labs",
-    neighborhood: "Financial District",
-    coordinates: [-122.4007, 37.7895],
+    locationLabel: "548 Market St, San Francisco",
+    coordinates: [-122.4001044, 37.7900832],
     founded: 2021,
     featuredTier: "core",
+    sourceUrl: "https://craft.co/anthropic/locations",
+    sourceLabel: "Craft locations page",
   },
   {
     slug: "perplexity",
@@ -377,22 +99,12 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Answer engine with a strong consumer feel and nonstop mindshare.",
     whyItMatters: "One of the clearest consumer-facing AI stories to come out of SF.",
     category: "Consumer AI",
-    neighborhood: "Financial District",
-    coordinates: [-122.4019, 37.7921],
+    locationLabel: "115 Sansome St, San Francisco",
+    coordinates: [-122.4010654, 37.7914533],
     founded: 2022,
     featuredTier: "core",
-  },
-  {
-    slug: "cursor",
-    name: "Cursor",
-    website: "https://cursor.com",
-    shortDescription: "AI coding tool that helped define the vibe of the current builder scene.",
-    whyItMatters: "Probably the most culturally visible devtool in the current wave.",
-    category: "Devtools",
-    neighborhood: "SoMa",
-    coordinates: [-122.4089, 37.7825],
-    founded: 2022,
-    featuredTier: "core",
+    sourceUrl: "https://craft.co/perplexity-ai/locations",
+    sourceLabel: "Craft locations page",
   },
   {
     slug: "scale-ai",
@@ -401,10 +113,12 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Data, evaluation, and enterprise infrastructure for training and deploying AI.",
     whyItMatters: "Too central to the SF AI ecosystem to leave off the map.",
     category: "Infra",
-    neighborhood: "Dogpatch",
-    coordinates: [-122.3871, 37.7823],
+    locationLabel: "650 Townsend St, San Francisco",
+    coordinates: [-122.4036566, 37.7709567],
     founded: 2016,
     featuredTier: "core",
+    sourceUrl: "https://craft.co/scale-ai/locations",
+    sourceLabel: "Craft locations page",
   },
   {
     slug: "baseten",
@@ -413,10 +127,12 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Inference platform for shipping AI products fast with production-ready performance.",
     whyItMatters: "A strong infra name with builder credibility and a sharp product story.",
     category: "Infra",
-    neighborhood: "SoMa",
-    coordinates: [-122.4056, 37.7817],
+    locationLabel: "575 Sutter St, San Francisco",
+    coordinates: [-122.4097317, 37.7888158],
     founded: 2019,
     featuredTier: "core",
+    sourceUrl: "https://craft.co/baseten/locations",
+    sourceLabel: "Craft locations page",
   },
   {
     slug: "harvey",
@@ -425,169 +141,408 @@ const CURATED_COMPANIES: Company[] = [
     shortDescription: "Legal AI company building one of the clearest vertical AI success stories.",
     whyItMatters: "Shows how much of SF AI is about real workflows, not just foundation models.",
     category: "Vertical AI",
-    neighborhood: "Jackson Square",
-    coordinates: [-122.4011, 37.7964],
+    locationLabel: "575 Market St, San Francisco",
+    coordinates: [-122.4003752, 37.7895414],
     founded: 2022,
     featuredTier: "hot",
+    sourceUrl: "https://craft.co/harvey-ai/locations",
+    sourceLabel: "Craft locations page",
   },
   {
-    slug: "decagon",
-    name: "Decagon",
-    website: "https://decagon.ai",
-    shortDescription: "AI agents for customer experience and support teams at enterprise scale.",
-    whyItMatters: "A very current example of the AI agent wave turning into product reality.",
-    category: "Agents",
-    neighborhood: "SoMa",
-    coordinates: [-122.4029, 37.7856],
+    slug: "xai",
+    name: "xAI",
+    website: "https://x.ai",
+    shortDescription:
+      "Elon Musk's AI lab building Grok, focused on reasoning and truth-seeking.",
+    whyItMatters:
+      "A major frontier lab operating from the Pioneer Building, OpenAI's former SF headquarters.",
+    category: "Core Labs",
+    locationLabel: "3180 18th St, San Francisco",
+    coordinates: [-122.4146, 37.7622],
     founded: 2023,
-    featuredTier: "hot",
-  },
-  {
-    slug: "langfuse",
-    name: "Langfuse",
-    website: "https://langfuse.com",
-    shortDescription: "Open-source LLM engineering and observability platform for teams shipping AI features.",
-    whyItMatters: "Represents the practical tooling layer behind modern AI apps.",
-    category: "Devtools",
-    neighborhood: "SoMa",
-    coordinates: [-122.4002, 37.7847],
-    founded: 2022,
-    featuredTier: "hot",
-  },
-  {
-    slug: "replit",
-    name: "Replit",
-    website: "https://replit.com",
-    shortDescription: "Cloud coding environment leaning hard into AI-assisted software creation.",
-    whyItMatters: "A familiar builder product that bridges mainstream and frontier developer audiences.",
-    category: "Devtools",
-    neighborhood: "North Beach",
-    coordinates: [-122.4033, 37.7999],
-    founded: 2016,
-    featuredTier: "scene",
-  },
-  {
-    slug: "notion",
-    name: "Notion",
-    website: "https://www.notion.so",
-    shortDescription: "Workspace product with an AI layer that shapes how many people work every day.",
-    whyItMatters: "Not a tiny startup, but too influential in SF AI product culture to ignore.",
-    category: "Vertical AI",
-    neighborhood: "Mission District",
-    coordinates: [-122.4064, 37.7597],
-    founded: 2013,
-    featuredTier: "scene",
-  },
-  {
-    slug: "11x",
-    name: "11x",
-    website: "https://11x.ai",
-    shortDescription: "AI digital workers aimed at automating revenue and go-to-market operations.",
-    whyItMatters: "One of the companies people point to when they talk about the agent economy.",
-    category: "Agents",
-    neighborhood: "SoMa",
-    coordinates: [-122.4078, 37.784],
-    founded: 2022,
-    featuredTier: "hot",
-  },
-  {
-    slug: "pika",
-    name: "Pika",
-    website: "https://pika.art",
-    shortDescription: "Idea-to-video product making generative media feel playful and immediate.",
-    whyItMatters: "A friendlier, creator-facing side of the SF AI scene.",
-    category: "Consumer AI",
-    neighborhood: "Mission District",
-    coordinates: [-122.4191, 37.7593],
-    founded: 2023,
-    featuredTier: "hot",
-  },
-  {
-    slug: "hedra",
-    name: "Hedra",
-    website: "https://www.hedra.com",
-    shortDescription: "Generative media platform focused on expressive AI characters and video creation.",
-    whyItMatters: "Captures the current energy around multimodal creative tools.",
-    category: "Consumer AI",
-    neighborhood: "Hayes Valley",
-    coordinates: [-122.4244, 37.7767],
-    founded: 2023,
-    featuredTier: "hot",
-  },
-  {
-    slug: "cartesia",
-    name: "Cartesia",
-    website: "https://cartesia.ai",
-    shortDescription: "Real-time multimodal intelligence for on-device and voice-heavy experiences.",
-    whyItMatters: "A strong signal that voice and low-latency AI are part of the SF stack.",
-    category: "Infra",
-    neighborhood: "SoMa",
-    coordinates: [-122.4106, 37.7812],
-    founded: 2023,
-    featuredTier: "hot",
-  },
-  {
-    slug: "adept",
-    name: "Adept",
-    website: "https://www.adept.ai",
-    shortDescription: "Applied research company working on AI systems that take actions in software.",
-    whyItMatters: "Still one of the clearest references for action-oriented AI assistants.",
-    category: "Agents",
-    neighborhood: "Presidio",
-    coordinates: [-122.4564, 37.7972],
-    founded: 2022,
-    featuredTier: "scene",
-  },
-  {
-    slug: "greptile",
-    name: "Greptile",
-    website: "https://www.greptile.com",
-    shortDescription: "AI code reviewer built for teams that want a second set of machine eyes on PRs.",
-    whyItMatters: "A very online developer-tool company with strong current-scene relevance.",
-    category: "Devtools",
-    neighborhood: "Civic Center",
-    coordinates: [-122.4162, 37.7811],
-    founded: 2023,
-    featuredTier: "hot",
-  },
-  {
-    slug: "anyscale",
-    name: "Anyscale",
-    website: "https://www.anyscale.com",
-    shortDescription: "Ray-driven infrastructure company helping teams build and scale AI systems.",
-    whyItMatters: "A key bridge between the research stack and practical model deployment.",
-    category: "Infra",
-    neighborhood: "Union Square",
-    coordinates: [-122.4074, 37.7881],
-    founded: 2019,
-    featuredTier: "scene",
-  },
-  {
-    slug: "unlearn",
-    name: "Unlearn",
-    website: "https://www.unlearn.ai",
-    shortDescription: "AI for clinical trial design, simulation, and drug development workflows.",
-    whyItMatters: "Represents the serious, domain-heavy side of SF AI innovation.",
-    category: "Vertical AI",
-    neighborhood: "Mission Bay",
-    coordinates: [-122.3905, 37.7676],
-    founded: 2017,
-    featuredTier: "scene",
+    featuredTier: "core",
+    sourceUrl:
+      "https://traded.co/deals/california/office/lease/3180-18th-street/",
+    sourceLabel: "Traded.co lease record",
   },
   {
     slug: "sierra",
     name: "Sierra",
     website: "https://sierra.ai",
-    shortDescription: "Conversational AI platform designed around customer-facing brand experiences.",
-    whyItMatters: "A strong proof point that AI assistants are becoming a mainstream product layer.",
+    shortDescription:
+      "AI agents for enterprise customer experience, co-founded by Bret Taylor and Clay Bavor.",
+    whyItMatters:
+      "One of the fastest-growing AI agent companies, with the largest office expansion in SF.",
     category: "Agents",
-    neighborhood: "South Beach",
-    coordinates: [-122.3908, 37.7806],
+    locationLabel: "235 Second St, San Francisco",
+    coordinates: [-122.3972, 37.786],
+    founded: 2023,
+    featuredTier: "core",
+    sourceUrl:
+      "https://traded.co/deals/california/office/lease/235-second-street/",
+    sourceLabel: "Traded.co lease record",
+  },
+  {
+    slug: "thinking-machines",
+    name: "Thinking Machines Lab",
+    website: "https://thinkingmachines.ai",
+    shortDescription:
+      "AI research lab co-founded by former OpenAI CTO Mira Murati, building frontier AI models.",
+    whyItMatters:
+      "The fastest-rising AI lab in SF, founded by one of the most prominent figures in modern AI.",
+    category: "Core Labs",
+    locationLabel: "2300 Harrison St, San Francisco",
+    coordinates: [-122.4127, 37.7606],
+    founded: 2025,
+    featuredTier: "core",
+    sourceUrl:
+      "https://traded.co/deals/california/office/lease/2300-harrison-street/",
+    sourceLabel: "Traded.co lease record",
+  },
+  {
+    slug: "together-ai",
+    name: "Together AI",
+    website: "https://www.together.ai",
+    shortDescription:
+      "Cloud platform for running and fine-tuning open-source AI models at scale.",
+    whyItMatters:
+      "Key infrastructure provider for the open-source AI model ecosystem.",
+    category: "Infra",
+    locationLabel: "251 Rhode Island St, San Francisco",
+    coordinates: [-122.4027, 37.7667],
+    founded: 2022,
+    featuredTier: "hot",
+    sourceUrl: "https://www.together.ai/terms-of-service",
+    sourceLabel: "Together AI Terms of Service",
+  },
+  {
+    slug: "cursor",
+    name: "Cursor",
+    website: "https://cursor.com",
+    shortDescription:
+      "AI-powered code editor built on VS Code with deep LLM integration for code generation.",
+    whyItMatters:
+      "The dominant AI code editor, one of the fastest-growing developer tools ever built.",
+    category: "Devtools",
+    locationLabel: "33 New Montgomery St, San Francisco",
+    coordinates: [-122.4013, 37.7886],
+    founded: 2022,
+    featuredTier: "hot",
+    sourceUrl: "https://www.cbinsights.com/company/anysphere",
+    sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: "cognition",
+    name: "Cognition",
+    website: "https://cognition.ai",
+    shortDescription:
+      "Creator of Devin, an autonomous AI software engineer for end-to-end coding tasks.",
+    whyItMatters:
+      "Pioneered the autonomous AI coding agent category with Devin.",
+    category: "Agents",
+    locationLabel: "1875 Mission St, San Francisco",
+    coordinates: [-122.4198, 37.7671],
+    founded: 2023,
+    featuredTier: "hot",
+    sourceUrl:
+      "https://www.bizprofile.net/ca/san-francisco/cognition-ai-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "physical-intelligence",
+    name: "Physical Intelligence",
+    website: "https://physicalintelligence.company",
+    shortDescription:
+      "AI research lab building general-purpose foundation models for robotics.",
+    whyItMatters:
+      "Leading the physical AI frontier with foundation models that teach robots real-world tasks.",
+    category: "Core Labs",
+    locationLabel: "396 Treat Ave, San Francisco",
+    coordinates: [-122.4136, 37.7639],
+    founded: 2024,
+    featuredTier: "hot",
+    sourceUrl:
+      "https://www.bizprofile.net/ca/san-francisco/physical-intelligence-pi-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "cohere",
+    name: "Cohere",
+    website: "https://cohere.com",
+    shortDescription:
+      "Enterprise AI platform building large language models for business applications.",
+    whyItMatters:
+      "Major LLM provider with a significant SF presence alongside its Toronto headquarters.",
+    category: "Core Labs",
+    locationLabel: "755 Sansome St, San Francisco",
+    coordinates: [-122.402, 37.7972],
+    founded: 2019,
+    featuredTier: "hot",
+    sourceUrl:
+      "https://bandana.com/companies/e362a6da-588c-42f7-bd1a-538c52757bb7/locations/418a9ab4-a428-4a8b-94b6-2d78bbbcaf0f",
+    sourceLabel: "Bandana company directory",
+  },
+  {
+    slug: "elevenlabs",
+    name: "ElevenLabs",
+    website: "https://elevenlabs.io",
+    shortDescription:
+      "AI voice technology platform for realistic speech synthesis and voice cloning.",
+    whyItMatters:
+      "The leading voice AI platform, powering speech synthesis for thousands of applications.",
+    category: "Infra",
+    locationLabel: "303 2nd St, San Francisco",
+    coordinates: [-122.3958, 37.7849],
+    founded: 2022,
+    featuredTier: "hot",
+    sourceUrl:
+      "https://websets.exa.ai/websets/directory/elevenlabs-offices",
+    sourceLabel: "Exa directory listing",
+  },
+  {
+    slug: "writer",
+    name: "Writer",
+    website: "https://writer.com",
+    shortDescription:
+      "Enterprise AI platform for building and deploying AI agents grounded in company data.",
+    whyItMatters:
+      "One of few enterprise AI companies building its own foundation models.",
+    category: "Vertical AI",
+    locationLabel: "111 Maiden Lane, San Francisco",
+    coordinates: [-122.4062, 37.788],
+    founded: 2020,
+    featuredTier: "hot",
+    sourceUrl: "https://www.cbinsights.com/company/qordoba",
+    sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: "11x",
+    name: "11x",
+    website: "https://www.11x.ai",
+    shortDescription:
+      "AI digital workers that automate sales development and go-to-market tasks.",
+    whyItMatters:
+      "Leading the AI digital worker category with backing from Benchmark and a16z.",
+    category: "Agents",
+    locationLabel: "677 Harrison St, San Francisco",
+    coordinates: [-122.3969, 37.7829],
+    founded: 2022,
+    featuredTier: "hot",
+    sourceUrl: "https://www.bizprofile.net/ca/san-francisco/11x-ai-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "abnormal",
+    name: "Abnormal Security",
+    website: "https://abnormal.ai",
+    shortDescription:
+      "AI-powered email security platform that detects and prevents business email compromise.",
+    whyItMatters:
+      "Major AI cybersecurity company using behavioral AI to protect enterprise email.",
+    category: "Vertical AI",
+    locationLabel: "185 Clara St, San Francisco",
+    coordinates: [-122.4017, 37.7799],
+    founded: 2018,
+    featuredTier: "hot",
+    sourceUrl: "https://opengovus.com/sam-entity/C1MPKNUNE761",
+    sourceLabel: "SAM.gov entity registration",
+  },
+  {
+    slug: "imbue",
+    name: "Imbue",
+    website: "https://imbue.com",
+    shortDescription:
+      "AI research lab building agents that can reason and code, formerly Generally Intelligent.",
+    whyItMatters:
+      "Billion-dollar AI research lab focused on building agents with robust reasoning.",
+    category: "Core Labs",
+    locationLabel: "2261 Market St, San Francisco",
+    coordinates: [-122.4322, 37.7647],
+    founded: 2021,
+    featuredTier: "hot",
+    sourceUrl:
+      "https://files.nitrd.gov/90-fr-9088/Imbue-AI-RFI-2025.pdf",
+    sourceLabel: "OSTP public filing",
+  },
+  {
+    slug: "llamaindex",
+    name: "LlamaIndex",
+    website: "https://www.llamaindex.ai",
+    shortDescription:
+      "Open-source data framework for connecting custom data sources with LLMs.",
+    whyItMatters:
+      "The leading RAG framework, core infrastructure for thousands of AI applications.",
+    category: "Devtools",
+    locationLabel: "325 5th St, San Francisco",
+    coordinates: [-122.4031, 37.7801],
+    founded: 2022,
+    featuredTier: "hot",
+    sourceUrl: "https://www.builtinsf.com/company/llamaindex",
+    sourceLabel: "Built In SF company profile",
+  },
+  {
+    slug: "langchain",
+    name: "LangChain",
+    website: "https://www.langchain.com",
+    shortDescription:
+      "Open-source framework and platform for building LLM-powered applications.",
+    whyItMatters:
+      "De facto standard framework for LLM application development.",
+    category: "Devtools",
+    locationLabel: "42 Decatur St, San Francisco",
+    coordinates: [-122.4063, 37.7726],
     founded: 2023,
     featuredTier: "scene",
+    sourceUrl:
+      "https://www.bizprofile.net/ca/san-francisco/langchain-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "wandb",
+    name: "Weights & Biases",
+    website: "https://wandb.ai",
+    shortDescription:
+      "ML developer platform for experiment tracking, model management, and dataset versioning.",
+    whyItMatters:
+      "Ubiquitous MLOps tool used by OpenAI, NVIDIA, and Meta.",
+    category: "Infra",
+    locationLabel: "400 Alabama St, San Francisco",
+    coordinates: [-122.4124, 37.7641],
+    founded: 2017,
+    featuredTier: "scene",
+    sourceUrl:
+      "https://www.bizprofile.net/ca/san-francisco/weights-and-biases-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "descript",
+    name: "Descript",
+    website: "https://www.descript.com",
+    shortDescription:
+      "AI-powered video and podcast editor enabling text-based media editing.",
+    whyItMatters:
+      "Pioneered AI-native media editing with text-based video and audio workflows.",
+    category: "Consumer AI",
+    locationLabel: "375 Alabama St, San Francisco",
+    coordinates: [-122.4123, 37.7645],
+    founded: 2017,
+    featuredTier: "scene",
+    sourceUrl: "https://www.descript.com/terms",
+    sourceLabel: "Descript Terms of Service",
+  },
+  {
+    slug: "lightfield",
+    name: "Lightfield",
+    website: "https://lightfield.app",
+    shortDescription:
+      "AI-native CRM built by the team behind Tome, the AI presentation tool.",
+    whyItMatters:
+      "Notable SF pivot from a viral AI presentation tool to AI-native enterprise CRM.",
+    category: "Vertical AI",
+    locationLabel: "600 Townsend St, San Francisco",
+    coordinates: [-122.4018, 37.7718],
+    founded: 2020,
+    featuredTier: "scene",
+    sourceUrl: "https://www.cbinsights.com/company/tome-1",
+    sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: "browserbase",
+    name: "Browserbase",
+    website: "https://www.browserbase.com",
+    shortDescription:
+      "Cloud platform providing headless browser infrastructure for AI agents.",
+    whyItMatters:
+      "Critical web-browsing infrastructure powering the AI agent ecosystem.",
+    category: "Infra",
+    locationLabel: "166 Geary St, San Francisco",
+    coordinates: [-122.406, 37.7877],
+    founded: 2024,
+    featuredTier: "scene",
+    sourceUrl:
+      "https://www.bizprofile.net/ca/san-francisco/browserbase-inc",
+    sourceLabel: "California business filing via BizProfile",
+  },
+  {
+    slug: "labelbox",
+    name: "Labelbox",
+    website: "https://labelbox.com",
+    shortDescription:
+      "AI data platform for training data labeling, curation, and model evaluation.",
+    whyItMatters:
+      "Essential data infrastructure for enterprise AI model training and evaluation.",
+    category: "Infra",
+    locationLabel: "510 Treat Ave, San Francisco",
+    coordinates: [-122.4145, 37.762],
+    founded: 2018,
+    featuredTier: "scene",
+    sourceUrl: "https://www.zoominfo.com/c/labelbox-inc/452502399",
+    sourceLabel: "ZoomInfo company listing",
+  },
+  {
+    slug: "forethought",
+    name: "Forethought",
+    website: "https://forethought.ai",
+    shortDescription:
+      "AI agents platform automating customer support ticket resolution for enterprises.",
+    whyItMatters:
+      "Early mover in AI-powered customer support automation.",
+    category: "Agents",
+    locationLabel: "345 California St, San Francisco",
+    coordinates: [-122.4005, 37.7931],
+    founded: 2017,
+    featuredTier: "scene",
+    sourceUrl:
+      "https://www.cbinsights.com/company/forethought-technologies",
+    sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: "sourcegraph",
+    name: "Sourcegraph",
+    website: "https://sourcegraph.com",
+    shortDescription:
+      "Code intelligence platform with AI-powered search and the Amp coding agent.",
+    whyItMatters:
+      "Established code search platform that built a competitive AI coding agent.",
+    category: "Devtools",
+    locationLabel: "400 Montgomery St, San Francisco",
+    coordinates: [-122.4027, 37.7929],
+    founded: 2013,
+    featuredTier: "scene",
+    sourceUrl:
+      "https://github.com/sourcegraph/handbook/blob/main/content/company-info-and-process/about-sourcegraph/general-office-info.md",
+    sourceLabel: "Sourcegraph public handbook",
+  },
+  {
+    slug: "wispr",
+    name: "Wispr Flow",
+    website: "https://wisprflow.ai",
+    shortDescription:
+      "AI voice dictation app that adapts to each user's writing style.",
+    whyItMatters:
+      "Fast-growing voice AI product replacing traditional text input with dictation.",
+    category: "Consumer AI",
+    locationLabel: "444 Townsend St, San Francisco",
+    coordinates: [-122.3983, 37.7746],
+    founded: 2021,
+    featuredTier: "scene",
+    sourceUrl: "https://www.cbinsights.com/company/wispr",
+    sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: "bland",
+    name: "Bland AI",
+    website: "https://www.bland.ai",
+    shortDescription:
+      "Enterprise platform for AI phone agents handling sales, support, and scheduling.",
+    whyItMatters:
+      "Automating enterprise phone communications with AI-powered voice agents.",
+    category: "Agents",
+    locationLabel: "292 Ivy St, San Francisco",
+    coordinates: [-122.4229, 37.7774],
+    founded: 2023,
+    featuredTier: "scene",
+    sourceUrl: "https://craft.co/bland-ai/locations",
+    sourceLabel: "Craft locations page",
   },
 ]
-
-const DISCOVERED_COMPANIES = YC_SF_SEARCH_COMPANIES.map(buildDiscoveredCompany)
-
-export const COMPANIES: Company[] = [...CURATED_COMPANIES, ...DISCOVERED_COMPANIES]
