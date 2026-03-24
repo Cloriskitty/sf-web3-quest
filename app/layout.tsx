@@ -1,6 +1,6 @@
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Inter, Press_Start_2P } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -16,6 +16,12 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const fontPixel = Press_Start_2P({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-pixel",
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +31,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", fontSans.variable)}
+      className={cn("antialiased", fontMono.variable, fontPixel.variable, "font-sans", fontSans.variable)}
     >
       <body>
         <ThemeProvider attribute="class" forcedTheme="light" disableTransitionOnChange>

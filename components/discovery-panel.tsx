@@ -21,6 +21,16 @@ type DiscoveryPanelProps = {
   onSelectCompany: (slug: string) => void
 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  All: "#1a1a2e",
+  "Core Labs": "#ff6b6b",
+  "Consumer AI": "#4ecdc4",
+  Devtools: "#ffe66d",
+  Infra: "#a855f7",
+  Agents: "#3b82f6",
+  "Vertical AI": "#ff9f43",
+}
+
 export function DiscoveryPanel({
   companies,
   selectedCompany,
@@ -34,7 +44,9 @@ export function DiscoveryPanel({
 
   useEffect(() => {
     const activeItem = activeItemRef.current
-    const isSelectedVisible = companies.some((company) => company.slug === selectedCompany.slug)
+    const isSelectedVisible = companies.some(
+      (company) => company.slug === selectedCompany.slug
+    )
 
     if (!activeItem || !isSelectedVisible) {
       return
@@ -48,41 +60,49 @@ export function DiscoveryPanel({
   }, [companies, selectedCompany.slug])
 
   return (
-    <aside className="flex min-h-0 h-full flex-col gap-4 overflow-y-auto border border-border bg-card p-5">
+    <aside className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto border-r-3 border-[#1a1a2e] bg-[#1a1a2e] p-5 text-[#f0f7e6]">
       <div className="space-y-4">
         <div className="space-y-3">
-          <h1 className="max-w-xs text-4xl font-semibold leading-tight tracking-[-0.04em] text-foreground">
-            SF AI startups, mapped.
+          <h1 className="font-[family-name:var(--font-pixel)] text-lg leading-relaxed tracking-tight text-[#ffe66d]">
+            SF AI
+            <br />
+            Startup Map
           </h1>
-          <div className="text-sm text-muted-foreground">{companies.length} companies</div>
-          <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            Only source-backed SF office locations are shown. Companies without a reliable
-            public location source stay out of the map until they are verified.
+          <div className="font-[family-name:var(--font-pixel)] text-[8px] text-[#4ecdc4]">
+            {companies.length} players on the board
+          </div>
+          <p className="max-w-md text-xs leading-5 text-[#f0f7e6]/70">
+            Only source-backed SF office locations are shown. Companies without
+            a reliable public location source stay off the map.
           </p>
         </div>
       </div>
 
-      <div className="space-y-4 border border-border bg-background p-4">
+      <div className="space-y-4 border-2 border-[#3a3a5e] bg-[#2a2a4e] p-4">
         <label className="block">
-          <span className="text-sm font-semibold text-foreground">Find a company</span>
+          <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#ffe66d]">
+            Search
+          </span>
           <span className="relative mt-2 block">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#f0f7e6]/50" />
             <input
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Search OpenAI, agents, voice..."
-              className="h-11 w-full border border-border bg-background pr-4 pl-10 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground"
+              placeholder="OpenAI, agents, voice..."
+              className="h-11 w-full border-2 border-[#3a3a5e] bg-[#1a1a2e] pr-4 pl-10 text-sm text-[#f0f7e6] outline-none transition-colors placeholder:text-[#f0f7e6]/30 focus:border-[#4ecdc4]"
             />
           </span>
         </label>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">Category</span>
+            <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#ffe66d]">
+              Category
+            </span>
             <button
               type="button"
               onClick={() => onCategoryChange("All")}
-              className="text-xs font-medium text-muted-foreground hover:text-foreground"
+              className="font-[family-name:var(--font-pixel)] text-[7px] text-[#ff6b6b] hover:text-[#ff6b6b]/80"
             >
               Reset
             </button>
@@ -91,6 +111,7 @@ export function DiscoveryPanel({
             <FilterPill
               active={category === "All"}
               label="All"
+              color={CATEGORY_COLORS["All"]}
               onClick={() => onCategoryChange("All")}
             />
             {COMPANY_CATEGORIES.map((item) => (
@@ -98,6 +119,7 @@ export function DiscoveryPanel({
                 key={item}
                 active={category === item}
                 label={item}
+                color={CATEGORY_COLORS[item]}
                 onClick={() => onCategoryChange(item)}
               />
             ))}
@@ -107,15 +129,21 @@ export function DiscoveryPanel({
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-foreground">Visible on the map</h2>
-          <span className="text-xs text-muted-foreground">Select a card or pin</span>
+          <h2 className="font-[family-name:var(--font-pixel)] text-[8px] text-[#4ecdc4]">
+            On the map
+          </h2>
+          <span className="font-[family-name:var(--font-pixel)] text-[6px] text-[#f0f7e6]/50">
+            Tap to select
+          </span>
         </div>
         {companies.length > 0 ? (
           <div className="grid gap-3 pr-1">
             {companies.map((company) => (
               <div
                 key={company.slug}
-                ref={company.slug === selectedCompany.slug ? activeItemRef : null}
+                ref={
+                  company.slug === selectedCompany.slug ? activeItemRef : null
+                }
               >
                 <CompanyCard
                   company={company}
@@ -127,10 +155,12 @@ export function DiscoveryPanel({
             ))}
           </div>
         ) : (
-          <div className="border border-dashed border-border bg-background p-6">
-            <h3 className="text-base font-semibold text-foreground">No companies match that filter.</h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Clear the search or switch back to All to broaden the view.
+          <div className="border-2 border-dashed border-[#3a3a5e] bg-[#2a2a4e] p-6">
+            <h3 className="font-[family-name:var(--font-pixel)] text-[9px] text-[#ff6b6b]">
+              No match found!
+            </h3>
+            <p className="mt-2 text-xs leading-5 text-[#f0f7e6]/70">
+              Clear the search or switch to All to broaden the view.
             </p>
           </div>
         )}
@@ -142,10 +172,12 @@ export function DiscoveryPanel({
 function FilterPill({
   active,
   label,
+  color,
   onClick,
 }: {
   active: boolean
   label: string
+  color: string
   onClick: () => void
 }) {
   return (
@@ -153,11 +185,19 @@ function FilterPill({
       type="button"
       onClick={onClick}
       className={cn(
-        "border px-3 py-2 text-xs font-medium transition-colors",
+        "border-2 px-3 py-2 text-[10px] font-bold transition-colors",
         active
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-background text-muted-foreground hover:text-foreground"
+          ? "border-[#1a1a2e] text-[#1a1a2e] shadow-[2px_2px_0px_#1a1a2e]"
+          : "border-[#3a3a5e] text-[#f0f7e6]/70 hover:text-[#f0f7e6]"
       )}
+      style={{
+        backgroundColor: active ? color : "transparent",
+        color: active
+          ? label === "Devtools" || label === "Vertical AI"
+            ? "#1a1a2e"
+            : "#ffffff"
+          : undefined,
+      }}
     >
       {label}
     </button>
