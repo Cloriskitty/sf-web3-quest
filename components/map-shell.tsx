@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import maplibregl, {
   type ExpressionSpecification,
   type Map as MapLibreMap,
@@ -13,6 +13,7 @@ import {
   type Company,
   type CompanyCategory,
 } from "@/lib/companies"
+import { PixelClouds } from "@/components/pixel-clouds"
 
 type MapShellProps = {
   companies: Company[]
@@ -406,6 +407,7 @@ export function MapShell({
   const mapRef = useRef<MapLibreMap | null>(null)
   const markersRef = useRef<Map<string, Marker>>(new Map())
   const hasInteractedRef = useRef(false)
+  const [mapReady, setMapReady] = useState<MapLibreMap | null>(null)
   const dense = companies.length >= 60
 
   useEffect(() => {
@@ -437,6 +439,7 @@ export function MapShell({
       applyMinecraftStyle(map)
       addVoxelCityLayers(map)
       map.resize()
+      setMapReady(map)
     })
     mapRef.current = map
 
@@ -533,6 +536,7 @@ export function MapShell({
           }}
         />
       </div>
+      {mapReady && <PixelClouds map={mapReady} />}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#fff3cf]/35 to-transparent" />
       <div className="pointer-events-none absolute top-4 left-4 border-[3px] border-[#342414] bg-[#f4ecd2] px-4 py-3 shadow-[4px_4px_0px_#342414]">
         <div className="font-[family-name:var(--font-pixel)] text-[8px] uppercase tracking-wider text-[#9a4d30]">
