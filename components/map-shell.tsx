@@ -641,10 +641,10 @@ export function MapShell({
         <Button
           type="button"
           onClick={onToggleMute}
-          className="h-10 border-[3px] border-[#342414] bg-[#f4ecd2] px-3 text-[10px] font-[family-name:var(--font-pixel)] text-[#4c3926] shadow-[4px_4px_0px_#342414] hover:bg-[#e7d8ae]"
+          aria-label={isAudioMuted ? "Unmute audio" : "Mute audio"}
+          className="size-10 border-[3px] border-[#342414] bg-[#f4ecd2] p-0 text-[#4c3926] shadow-[4px_4px_0px_#342414] hover:bg-[#e7d8ae]"
         >
           {isAudioMuted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
-          <span>{isAudioMuted ? "Unmute" : "Mute"}</span>
         </Button>
       </div>
       <div className="pointer-events-none absolute right-4 bottom-4 border-[3px] border-[#342414] bg-[#f4ecd2] px-3 py-2 shadow-[4px_4px_0px_#342414]">
