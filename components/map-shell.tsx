@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Volume2, VolumeX } from "lucide-react"
+import { Github, Volume2, VolumeX } from "lucide-react"
 import maplibregl, {
   type ExpressionSpecification,
   type Map as MapLibreMap,
@@ -501,6 +501,238 @@ function createSpriteMarker(
   return wrapper
 }
 
+// YC / landmark: YC brand orange + cream trim — reads as "boss" vs neutral robots.
+function makeBossLogoBadge(
+  company: Company,
+  active: boolean,
+  dense: boolean,
+  brandOrange: string,
+  trimCream: string
+) {
+  const OL = "#342414"
+  const sz = dense ? (active ? 30 : 24) : active ? 36 : 30
+  const innerSz = Math.max(10, sz - 10)
+  const rawLogoSz = dense ? (active ? 22 : 16) : active ? 26 : 20
+  const logoSz = Math.min(rawLogoSz, Math.max(8, innerSz - 2))
+  const badge = sd({
+    width: `${sz}px`,
+    height: `${sz}px`,
+    border: `3px solid ${trimCream}`,
+    background: brandOrange,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "2px",
+    boxSizing: "border-box",
+    boxShadow: active
+      ? `0 0 0 2px rgba(255,248,240,0.95), 0 0 0 4px rgba(242,101,34,0.5), 3px 3px 0 ${OL}`
+      : `3px 3px 0 ${OL}`,
+    marginBottom: "2px",
+    position: "relative",
+    zIndex: "6",
+  })
+  const inner = sd({
+    width: `${innerSz}px`,
+    height: `${innerSz}px`,
+    background: "#fff8f0",
+    border: `2px solid ${OL}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxSizing: "border-box",
+  })
+  const img = document.createElement("img")
+  img.src = getCompanyLogoUrl(company)
+  img.alt = company.name
+  Object.assign(img.style, {
+    width: `${logoSz}px`,
+    height: `${logoSz}px`,
+    objectFit: "contain",
+  })
+  const monogram = getCompanyMonogram(company)
+  img.addEventListener("error", () => {
+    img.replaceWith(createFallback(monogram, active, dense))
+  })
+  inner.appendChild(img)
+  badge.appendChild(inner)
+  return badge
+}
+
+function createBossSpriteMarker(
+  company: Company,
+  active: boolean,
+  dense: boolean
+) {
+  // Y Combinator–style orange (high saturation, readable on the map).
+  const orange = "#f26522"
+  const orangeDeep = "#d94d12"
+  const orangeMid = "#ea5a1a"
+  const orangeLight = "#ff8f4d"
+  const trimCream = "#fff8f0"
+  const OL = "#342414"
+  const eyeWhite = "#fffef8"
+  const w = dense ? (active ? 36 : 30) : active ? 44 : 36
+  const h = dense ? (active ? 46 : 38) : active ? 54 : 44
+  const bw = active ? 3 : 2
+
+  const wrapper = sd({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    filter: active ? "none" : "brightness(0.97)",
+  })
+
+  wrapper.appendChild(makeBossLogoBadge(company, active, dense, orange, trimCream))
+
+  wrapper.appendChild(
+    sd({
+      width: `${Math.round(w * 0.92)}px`,
+      height: "6px",
+      background: orangeDeep,
+      border: `2px solid ${OL}`,
+      marginTop: "-1px",
+      marginBottom: "3px",
+      boxShadow: `2px 2px 0 ${OL}, 0 0 8px rgba(242,101,34,0.55)`,
+      position: "relative",
+      zIndex: "5",
+    })
+  )
+
+  const horns = sd({
+    display: "flex",
+    flexDirection: "row",
+    gap: `${Math.round(w * 0.22)}px`,
+    marginBottom: "-4px",
+    position: "relative",
+    zIndex: "3",
+  })
+  for (let i = 0; i < 2; i++) {
+    horns.appendChild(
+      sd({
+        width: "0",
+        height: "0",
+        borderLeft: `${Math.round(w * 0.12)}px solid transparent`,
+        borderRight: `${Math.round(w * 0.12)}px solid transparent`,
+        borderBottom: `${Math.round(h * 0.14)}px solid ${orangeLight}`,
+        filter: "drop-shadow(2px 2px 0 #342414)",
+      })
+    )
+  }
+  wrapper.appendChild(horns)
+
+  const head = sd({
+    width: `${w}px`,
+    height: `${Math.round(h * 0.52)}px`,
+    background: orange,
+    border: `${bw}px solid ${OL}`,
+    boxShadow: active
+      ? `5px 5px 0 ${OL}, 0 0 12px rgba(242,101,34,0.65)`
+      : `5px 5px 0 ${OL}`,
+    position: "relative",
+  })
+
+  const eSz = Math.max(6, Math.round(w * 0.2))
+  for (const side of ["left", "right"] as const) {
+    head.appendChild(
+      sd({
+        position: "absolute",
+        top: `${Math.round(h * 0.07)}px`,
+        [side]: `${Math.round(w * 0.1)}px`,
+        width: `${eSz}px`,
+        height: `${eSz}px`,
+        background: eyeWhite,
+        border: `2px solid ${OL}`,
+        boxShadow: "inset -1px -1px 0 rgba(0,0,0,0.12)",
+      })
+    )
+  }
+
+  head.appendChild(
+    sd({
+      position: "absolute",
+      bottom: `${Math.round(h * 0.07)}px`,
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: `${Math.round(w * 0.52)}px`,
+      height: `${Math.max(4, Math.round(h * 0.06))}px`,
+      background: OL,
+      borderTop: `2px solid ${orangeDeep}`,
+    })
+  )
+  wrapper.appendChild(head)
+
+  const shoulders = sd({
+    display: "flex",
+    flexDirection: "row",
+    gap: `${Math.round(w * 0.08)}px`,
+    marginTop: "-3px",
+  })
+  for (let i = 0; i < 2; i++) {
+    shoulders.appendChild(
+      sd({
+        width: `${Math.round(w * 0.42)}px`,
+        height: `${Math.round(h * 0.12)}px`,
+        background: orangeMid,
+        border: `2px solid ${OL}`,
+        boxShadow: `2px 2px 0 ${OL}`,
+      })
+    )
+  }
+  wrapper.appendChild(shoulders)
+
+  wrapper.appendChild(
+    sd({
+      width: `${Math.round(w * 0.72)}px`,
+      height: `${Math.round(h * 0.28)}px`,
+      background: orangeDeep,
+      border: `${bw}px solid ${OL}`,
+      marginTop: "-2px",
+      boxShadow: `inset 0 -6px 0 rgba(180,60,10,0.35)`,
+    })
+  )
+
+  const feet = sd({
+    display: "flex",
+    gap: `${Math.round(w * 0.18)}px`,
+    marginTop: "-1px",
+  })
+  for (let i = 0; i < 2; i++) {
+    feet.appendChild(
+      sd({
+        width: `${Math.round(w * 0.3)}px`,
+        height: `${Math.round(h * 0.11)}px`,
+        background: orangeDeep,
+        border: `2px solid ${OL}`,
+      })
+    )
+  }
+  wrapper.appendChild(feet)
+
+  wrapper.appendChild(
+    sd({
+      width: `${Math.round(w * 0.95)}px`,
+      height: "8px",
+      background: "rgba(52,36,20,0.35)",
+      marginTop: "3px",
+      boxShadow: "0 0 0 1px rgba(242,101,34,0.25)",
+    })
+  )
+
+  return wrapper
+}
+
+function createMarkerSprite(
+  company: Company,
+  active: boolean,
+  dense: boolean
+) {
+  if (company.mapSprite === "boss") {
+    return createBossSpriteMarker(company, active, dense)
+  }
+
+  return createSpriteMarker(company, active, dense)
+}
+
 function createFallback(monogram: string, active: boolean, dense: boolean) {
   const el = document.createElement("span")
   el.textContent = monogram
@@ -524,8 +756,14 @@ export function MapShell({
   const mapRef = useRef<MapLibreMap | null>(null)
   const markersRef = useRef<Map<string, Marker>>(new Map())
   const hasInteractedRef = useRef(false)
+  const mapMarkersSignatureRef = useRef("")
+  const selectedSlugRef = useRef(selectedCompany.slug)
   const [mapReady, setMapReady] = useState<MapLibreMap | null>(null)
   const dense = companies.length >= 60
+
+  useEffect(() => {
+    selectedSlugRef.current = selectedCompany.slug
+  }, [selectedCompany.slug])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) {
@@ -540,7 +778,7 @@ export function MapShell({
       zoom: 11.95,
       pitch: MAP_PITCH,
       bearing: MAP_BEARING,
-      minZoom: 11.1,
+      minZoom: 9.5,
       maxZoom: 15.8,
       attributionControl: false,
       renderWorldCopies: false,
@@ -550,7 +788,8 @@ export function MapShell({
     map.touchZoomRotate.disableRotation()
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
-      "top-right"
+      // Bottom-right so the category legend can use the top-right without overlap.
+      "bottom-right"
     )
     map.on("load", () => {
       applyMinecraftStyle(map)
@@ -585,7 +824,7 @@ export function MapShell({
     markersRef.current.clear()
 
     companies.forEach((company) => {
-      const active = company.slug === selectedCompany.slug
+      const active = company.slug === selectedSlugRef.current
       const element = document.createElement("button")
       element.type = "button"
       element.setAttribute("aria-label", company.name)
@@ -594,7 +833,7 @@ export function MapShell({
       element.style.outline = "none"
       element.style.background = "none"
       element.style.border = "none"
-      element.appendChild(createSpriteMarker(company, active, dense))
+      element.appendChild(createMarkerSprite(company, active, dense))
       element.addEventListener("click", () => onSelectCompany(company.slug))
 
       const marker = new maplibregl.Marker({ element, anchor: "bottom" })
@@ -603,7 +842,37 @@ export function MapShell({
 
       markersRef.current.set(company.slug, marker)
     })
-  }, [companies, dense, onSelectCompany, selectedCompany.slug])
+
+    const markerSetSignature = [...companies]
+      .map((c) => c.slug)
+      .sort()
+      .join("|")
+    const shouldRefit =
+      markerSetSignature !== mapMarkersSignatureRef.current && companies.length > 0
+    mapMarkersSignatureRef.current = markerSetSignature
+
+    if (shouldRefit) {
+      const bounds = new maplibregl.LngLatBounds()
+      companies.forEach((c) => bounds.extend(c.coordinates))
+
+      if (companies.length === 1) {
+        map.jumpTo({
+          center: companies[0].coordinates,
+          zoom: 12.5,
+          pitch: MAP_PITCH,
+          bearing: MAP_BEARING,
+        })
+      } else {
+        map.fitBounds(bounds, {
+          padding: 56,
+          maxZoom: 12.35,
+          duration: 0,
+        })
+        map.setPitch(MAP_PITCH)
+        map.setBearing(MAP_BEARING)
+      }
+    }
+  }, [companies, dense, onSelectCompany])
 
   useEffect(() => {
     markersRef.current.forEach((marker, slug) => {
@@ -613,7 +882,7 @@ export function MapShell({
 
       button.style.zIndex = active ? "10" : "1"
       if (company) {
-        button.replaceChildren(createSpriteMarker(company, active, dense))
+        button.replaceChildren(createMarkerSprite(company, active, dense))
       }
     })
   }, [companies, dense, selectedCompany])
@@ -659,15 +928,7 @@ export function MapShell({
       </div>
       {mapReady && <PixelClouds map={mapReady} />}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#fff3cf]/35 to-transparent" />
-      <div className="pointer-events-none absolute top-4 left-4 border-[3px] border-[#342414] bg-[#f4ecd2] px-4 py-3 shadow-[4px_4px_0px_#342414]">
-        <div className="font-[family-name:var(--font-pixel)] text-[8px] uppercase tracking-wider text-[#9a4d30]">
-          SF AI Startup Map
-        </div>
-        <p className="mt-1 max-w-[220px] text-[11px] leading-4 text-[#4c3926]">
-          Isometric pixel view of source-backed SF office locations.
-        </p>
-      </div>
-      <div className="absolute top-24 left-4 z-10">
+      <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
         <Button
           type="button"
           onClick={onToggleMute}
@@ -683,8 +944,17 @@ export function MapShell({
             <Volume2 className="volume-unmuted-icon size-3.5" />
           )}
         </Button>
+        <a
+          href="https://github.com/taishikato/sf-ai-startup-quest"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex size-10 items-center justify-center border-[3px] border-[#342414] bg-[#f4ecd2] text-[#4c3926] shadow-[4px_4px_0px_#342414] transition-colors hover:bg-[#e7d8ae]"
+          aria-label="View source on GitHub"
+        >
+          <Github className="size-3.5" strokeWidth={2} aria-hidden />
+        </a>
       </div>
-      <div className="pointer-events-none absolute right-4 top-16 hidden flex-col gap-1 lg:flex">
+      <div className="pointer-events-none absolute top-4 right-4 hidden flex-col gap-1 lg:flex">
         {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
           <div
             key={cat}

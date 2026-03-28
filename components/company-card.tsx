@@ -58,8 +58,17 @@ export function CompanyCard({
                 >
                   {company.category}
                 </span>
-                <span className="text-[8px] font-bold text-[#f0f7e6]/50">
-                  {tierLabel[company.featuredTier]}
+                <span
+                  className={cn(
+                    "text-[8px] font-bold",
+                    company.mapSprite === "boss"
+                      ? "text-[#f26522]"
+                      : "text-[#f0f7e6]/50",
+                  )}
+                >
+                  {company.mapSprite === "boss"
+                    ? "BOSS"
+                    : tierLabel[company.featuredTier]}
                 </span>
               </div>
               <h3 className="mt-1 text-sm font-bold text-[#f0f7e6]">
@@ -115,7 +124,9 @@ export function CompanyCard({
             >
               {company.category}
             </span>
-            {company.featuredTier === "hot" ? (
+            {company.mapSprite === "boss" ? (
+              <span className="text-[10px] font-bold text-[#f26522]">BOSS</span>
+            ) : company.featuredTier === "hot" ? (
               <span className="flex items-center gap-1 text-[10px] font-bold text-[#ff6b6b]">
                 <Flame className="size-3" />
                 {tierLabel[company.featuredTier]}

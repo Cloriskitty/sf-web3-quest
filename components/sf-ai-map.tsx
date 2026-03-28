@@ -4,7 +4,12 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 
 import { DiscoveryPanel } from "@/components/discovery-panel"
 import { MapShell } from "@/components/map-shell"
-import { COMPANIES, type CompanyCategory } from "@/lib/companies"
+import {
+  COMPANIES,
+  YC_BOSS_SLUG,
+  type Company,
+  type CompanyCategory,
+} from "@/lib/companies"
 import { cn } from "@/lib/utils"
 
 const featuredOrder = ["core", "hot", "scene"] as const
@@ -74,6 +79,10 @@ export function SfAiMap() {
       .filter((company) => (category === "All" ? true : company.category === category))
       .filter((company) => {
         if (!query) {
+          if (company.hideFromSidebar) {
+            return false
+          }
+
           return true
         }
 
@@ -107,7 +116,17 @@ export function SfAiMap() {
     filteredCompanies[0] ??
     COMPANIES[0]
 
-  const mapCompanies = filteredCompanies.length > 0 ? filteredCompanies : [selectedCompany]
+  const mapCompanies = useMemo((): Company[] => {
+    const base =
+      filteredCompanies.length > 0 ? filteredCompanies : [selectedCompany]
+    const boss = COMPANIES.find((c) => c.slug === YC_BOSS_SLUG)
+
+    if (!boss || base.some((c) => c.slug === YC_BOSS_SLUG)) {
+      return base
+    }
+
+    return [...base, boss]
+  }, [filteredCompanies, selectedCompany])
 
   return (
     <main className="h-dvh overflow-hidden bg-[#1a1a2e]">

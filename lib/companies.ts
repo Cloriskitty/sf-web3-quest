@@ -43,9 +43,16 @@ export type Company = {
   founded: number
   featuredTier: FeaturedTier
   logoUrl?: string
+  /** When true, the card is omitted from the sidebar until the user searches. */
+  hideFromSidebar?: boolean
+  /** Map marker style — "boss" uses a larger, high-threat sprite. */
+  mapSprite?: "default" | "boss"
   sourceUrl: string
   sourceLabel: string
 }
+
+/** Slug for the YC HQ landmark (not an SF startup; shown as a map boss). */
+export const YC_BOSS_SLUG = "y-combinator" as const
 
 export function getCompanyMonogram(company: Company) {
   if (company.name === "11x") {
@@ -895,5 +902,24 @@ export const COMPANIES: Company[] = [
     sourceUrl:
       "https://www.cbinsights.com/company/assemblyai",
     sourceLabel: "CB Insights company profile",
+  },
+  {
+    slug: YC_BOSS_SLUG,
+    name: "Y Combinator",
+    website: "https://www.ycombinator.com",
+    shortDescription:
+      "The accelerator that shaped modern startup culture — the final boss of the Bay Area map.",
+    whyItMatters:
+      "Not a player on the SF board, but the institution behind many of them: a deliberate boss marker south of the city.",
+    category: "Infra",
+    locationLabel: "335 Pioneer Way, Mountain View",
+    coordinates: [-122.0668804, 37.3862565],
+    founded: 2005,
+    featuredTier: "core",
+    logoUrl: "https://www.google.com/s2/favicons?domain=ycombinator.com&sz=128",
+    hideFromSidebar: true,
+    mapSprite: "boss",
+    sourceUrl: "https://www.openstreetmap.org/search?query=335%20Pioneer%20Way%20Mountain%20View%20CA",
+    sourceLabel: "OpenStreetMap / Nominatim geocode",
   },
 ]
