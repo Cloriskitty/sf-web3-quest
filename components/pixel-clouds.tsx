@@ -111,7 +111,7 @@ type CloudConfig = {
 const CLOUD_CONFIGS: CloudConfig[] = [
   {
     shape: 0,
-    size: 3,
+    size: 4,
     lat: 37.815,
     lng: -122.39,
     speed: 0.0012,
@@ -119,7 +119,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 2,
-    size: 3,
+    size: 4,
     lat: 37.795,
     lng: -122.43,
     speed: 0.0008,
@@ -127,7 +127,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 1,
-    size: 3,
+    size: 4,
     lat: 37.808,
     lng: -122.36,
     speed: 0.001,
@@ -135,7 +135,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 3,
-    size: 2,
+    size: 3,
     lat: 37.782,
     lng: -122.45,
     speed: 0.0006,
@@ -143,7 +143,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 2,
-    size: 2,
+    size: 3,
     lat: 37.775,
     lng: -122.41,
     speed: 0.0005,
@@ -151,7 +151,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 0,
-    size: 2,
+    size: 3,
     lat: 37.82,
     lng: -122.44,
     speed: 0.0011,
@@ -159,7 +159,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 1,
-    size: 2,
+    size: 3,
     lat: 37.788,
     lng: -122.38,
     speed: 0.0007,
@@ -167,7 +167,7 @@ const CLOUD_CONFIGS: CloudConfig[] = [
   },
   {
     shape: 3,
-    size: 2,
+    size: 3,
     lat: 37.77,
     lng: -122.42,
     speed: 0.0004,

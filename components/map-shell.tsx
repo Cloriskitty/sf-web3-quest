@@ -28,8 +28,9 @@ type MapShellProps = {
 const SF_CENTER: [number, number] = [-122.4167, 37.7793]
 const MAP_STYLE =
   "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
-const MAP_PITCH = 46
-const MAP_BEARING = -18
+// Oblique camera reads closer to isometric / retro city builders.
+const MAP_PITCH = 54
+const MAP_BEARING = -24
 
 const CATEGORY_COLORS: Record<CompanyCategory, string> = {
   "Core Labs": "#bb5a3c",
@@ -394,13 +395,13 @@ function createSpriteMarker(
   )
   wrapper.appendChild(antenna)
 
-  // Robot head
+  // Robot head (flat fills — reads clearer when the map is pixel-crisp)
   const head = sd({
     width: `${w}px`,
     height: `${Math.round(h * 0.5)}px`,
-    background: `linear-gradient(180deg, #c0c8d8 0%, #a0a8b8 100%)`,
+    background: "#b4bcc8",
     border: `${bw}px solid ${OL}`,
-    boxShadow: `3px 3px 0 ${OL}`,
+    boxShadow: `4px 4px 0 ${OL}`,
     position: "relative",
   })
   // Eyes (category colored)
@@ -461,14 +462,14 @@ function createSpriteMarker(
   }
   wrapper.appendChild(feet)
 
-  // Ground shadow
+  // Ground shadow (chunky pixel ellipse, no blur)
   wrapper.appendChild(
     sd({
-      width: `${Math.round(w * 0.8)}px`,
-      height: "4px",
-      background: "rgba(52,36,20,0.22)",
-      filter: "blur(1px)",
+      width: `${Math.round(w * 0.85)}px`,
+      height: "6px",
+      background: "rgba(52,36,20,0.35)",
       marginTop: "2px",
+      boxShadow: "0 0 0 1px rgba(52,36,20,0.15)",
     })
   )
 
@@ -616,14 +617,18 @@ export function MapShell({
 
   return (
     <div className="relative h-full min-h-0 overflow-hidden bg-[#cdb98b] lg:min-h-160">
-      <div ref={containerRef} className="h-full w-full" />
-      <div className="pointer-events-none absolute inset-0 opacity-30">
+      <div
+        className="h-full w-full [&_.maplibregl-map]:filter-[contrast(1.07)_saturate(1.06)]"
+        ref={containerRef}
+      />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.38]">
         <div
           className="h-full w-full"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(53,37,20,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(53,37,20,0.14) 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
+              "linear-gradient(rgba(53,37,20,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(53,37,20,0.2) 1px, transparent 1px)",
+            backgroundSize: "16px 16px",
+            backgroundPosition: "0 0, 0 0",
           }}
         />
       </div>
@@ -634,7 +639,7 @@ export function MapShell({
           SF AI Startup Map
         </div>
         <p className="mt-1 max-w-[220px] text-[11px] leading-4 text-[#4c3926]">
-          Voxel-style view of source-backed SF office locations.
+          Isometric pixel view of source-backed SF office locations.
         </p>
       </div>
       <div className="absolute top-24 left-4 z-10">
@@ -666,6 +671,8 @@ export function MapShell({
       <style jsx global>{`
         .maplibregl-canvas {
           image-rendering: pixelated;
+          image-rendering: crisp-edges;
+          image-rendering: -moz-crisp-edges;
         }
 
         .maplibregl-ctrl-group {
