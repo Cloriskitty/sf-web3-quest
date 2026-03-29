@@ -5,36 +5,27 @@ import { Geist_Mono, Inter, Press_Start_2P } from "next/font/google";
 
 import "./globals.css";
 
+import { pageDescription, pageTitle, ogImage, siteUrl } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: "SF AI Startup Map",
-  description:
-    "Explore San Francisco AI startups on an interactive map — retro quest style.",
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
+  title: pageTitle,
+  description: pageDescription,
   openGraph: {
-    title: "SF AI Startup Map",
-    description:
-      "Explore San Francisco AI startups on an interactive map — retro quest style.",
+    title: pageTitle,
+    description: pageDescription,
     type: "website",
-    images: [
-      {
-        url: "/ogp-sf-ai-startup-map.png",
-        width: 1367,
-        height: 768,
-        alt: "SF Startup Quest pixel-art key visual",
-      },
-    ],
+    url: siteUrl,
+    siteName: "SF AI Startup Map",
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SF AI Startup Map",
-    description:
-      "Explore San Francisco AI startups on an interactive map — retro quest style.",
-    images: ["/ogp-sf-ai-startup-map.png"],
+    title: pageTitle,
+    description: pageDescription,
+    images: [ogImage],
   },
   icons: {
     icon: [{ url: "/brand-mark.svg", type: "image/svg+xml" }],
