@@ -8,10 +8,34 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "SF AI Startup Map",
   description:
     "Explore San Francisco AI startups on an interactive map — retro quest style.",
+  openGraph: {
+    title: "SF AI Startup Map",
+    description:
+      "Explore San Francisco AI startups on an interactive map — retro quest style.",
+    type: "website",
+    images: [
+      {
+        url: "/ogp-sf-ai-startup-map.png",
+        width: 1367,
+        height: 768,
+        alt: "SF Startup Quest pixel-art key visual",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SF AI Startup Map",
+    description:
+      "Explore San Francisco AI startups on an interactive map — retro quest style.",
+    images: ["/ogp-sf-ai-startup-map.png"],
+  },
   icons: {
     icon: [{ url: "/brand-mark.svg", type: "image/svg+xml" }],
     apple: "/brand-mark.svg",
