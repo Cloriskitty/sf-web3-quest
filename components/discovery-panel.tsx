@@ -66,13 +66,13 @@ export function DiscoveryPanel({
               className="shrink-0"
               priority
             />
-            <h1 className="font-[family-name:var(--font-pixel)] text-lg leading-relaxed tracking-tight text-[#ffe66d]">
+            <h1 className="font-(family-name:--font-pixel) text-lg leading-relaxed tracking-tight text-[#ffe66d]">
               SF AI
               <br />
               Startup Map
             </h1>
           </div>
-          <div className="font-[family-name:var(--font-pixel)] text-[8px] text-[#4ecdc4]">
+          <div className="font-(family-name:--font-pixel) text-[8px] text-[#4ecdc4]">
             {companies.length} players on the board
           </div>
         </div>
@@ -80,7 +80,7 @@ export function DiscoveryPanel({
 
       <div className="space-y-4 border-2 border-[#3a3a5e] bg-[#2a2a4e] p-4">
         <label className="block">
-          <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#ffe66d]">
+          <span className="font-(family-name:--font-pixel) text-[8px] text-[#ffe66d]">
             Search
           </span>
           <span className="relative mt-2 block">
@@ -96,13 +96,13 @@ export function DiscoveryPanel({
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#ffe66d]">
+            <span className="font-(family-name:--font-pixel) text-[8px] text-[#ffe66d]">
               Category
             </span>
             <button
               type="button"
               onClick={() => onCategoryChange("All")}
-              className="font-[family-name:var(--font-pixel)] text-[7px] text-[#ff6b6b] hover:text-[#ff6b6b]/80"
+              className="font-(family-name:--font-pixel) text-[7px] text-[#ff6b6b] hover:text-[#ff6b6b]/80"
             >
               Reset
             </button>
@@ -156,7 +156,7 @@ export function DiscoveryPanel({
           </div>
         ) : (
           <div className="border-2 border-dashed border-[#3a3a5e] bg-[#2a2a4e] p-6">
-            <h3 className="font-[family-name:var(--font-pixel)] text-[9px] text-[#ff6b6b]">
+            <h3 className="font-(family-name:--font-pixel) text-[9px] text-[#ff6b6b]">
               No match found!
             </h3>
             <p className="mt-2 text-xs leading-5 text-[#f0f7e6]/70">
@@ -167,7 +167,7 @@ export function DiscoveryPanel({
       </section>
 
       <section className="space-y-3 lg:hidden">
-        <h2 className="font-[family-name:var(--font-pixel)] text-[8px] text-[#4ecdc4]">
+        <h2 className="font-(family-name:--font-pixel) text-[8px] text-[#4ecdc4]">
           Selected
         </h2>
         <CompanyCard company={selectedCompany} active />
