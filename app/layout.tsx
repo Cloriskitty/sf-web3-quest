@@ -2,6 +2,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 
 import type { Metadata } from "next"
 import { Geist_Mono, Inter, Press_Start_2P } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css"
 
@@ -74,6 +75,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
