@@ -1,19 +1,37 @@
-# SF AI Startup Quest Map
+# SF Bay Area Web3 Quest 🗺️⛓️
 
-Dragon quest-like map that shows AI startups in SF 🤖
+A Dragon Quest-style interactive map of Web3 and crypto companies across the San Francisco Bay Area — from the Financial District to Silicon Valley.
 
-i built this because I wanted a fun, interactive way to see where AI startups in sf are mainly located and how they’re clustered around the city 🌁
+## 🏰 What's on the map
 
-<img width="2106" height="1486" alt="Image" src="https://github.com/user-attachments/assets/7315b2c6-5e4b-4ca5-8411-35e2e583a5b7" />
+17 companies spanning the full Bay Area Web3 ecosystem:
 
-## What's This
+- **Exchanges** — Coinbase, Kraken, OKX, Robinhood, CoinList
+- **Infrastructure** — Alchemy, Protocol Labs, Chainlink Labs, Solana Labs, Aptos Labs, Mysten Labs, Forte
+- **Custody** — Anchorage Digital, BitGo
+- **Payments** — Ripple
+- **Investor** — a16z Crypto
 
-- A map-based app for browsing AI startups in San Francisco
-- Startup data is maintained in `lib/companies.ts` with source links
+## 🗾 Coverage
 
-## Development
+- 📍 San Francisco (Financial District, SoMa, Mission Rock)
+- 📍 Palo Alto & Menlo Park
+- 📍 San Jose
+- 📍 South San Francisco
+
+## 🚀 Getting started
 
 ```bash
 pnpm install
 pnpm dev
 ```
+
+## 🤝 Add your company
+
+Know a Bay Area Web3 company that should be on the map? Open a PR and add it to `lib/companies.ts`.
+
+Each entry needs: name, address, coordinates, founded year, and a source URL for verification.
+
+---
+
+*Inspired by [SF AI Startup Quest](https://github.com/taishikato/sf-ai-startup-quest) by @taishikato*
