@@ -67,9 +67,9 @@ export function DiscoveryPanel({
               priority
             />
             <h1 className="font-(family-name:--font-pixel) text-lg leading-relaxed tracking-tight text-[#ffe66d]">
-              SF AI
+              SF Bay
               <br />
-              Startup Map
+              Web3 Quest
             </h1>
           </div>
           <div className="font-(family-name:--font-pixel) text-[8px] text-[#4ecdc4]">
