@@ -964,7 +964,7 @@ export function MapShell({
           )}
         </Button>
         <a
-          href="https://github.com/taishikato/sf-ai-startup-quest"
+          href="https://github.com/Cloriskitty/sf-web3-quest"
           target="_blank"
           rel="noopener noreferrer"
           className="flex size-10 items-center justify-center border-[3px] border-[#342414] bg-[#f4ecd2] text-[#4c3926] shadow-[4px_4px_0px_#342414] transition-colors hover:bg-[#e7d8ae]"
