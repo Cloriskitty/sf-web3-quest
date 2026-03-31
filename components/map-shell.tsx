@@ -973,17 +973,17 @@ export function MapShell({
           <Github className="size-3.5" strokeWidth={2} aria-hidden />
         </a>
         <a
-          href="https://toronto-ai-startup-quest.vercel.app"
+          href="https://sf-ai-startup-quest.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
           className="flex size-10 items-center justify-center border-[3px] border-[#342414] bg-[#f4ecd2] text-[#4c3926] shadow-[4px_4px_0px_#342414] transition-colors hover:bg-[#e7d8ae]"
-          aria-label="Open Toronto AI Startup Quest"
+          aria-label="Open SF AI Startup Quest (Original)"
         >
           <span
             className="font-(family-name:--font-pixel) text-[11px] leading-none tracking-tight"
             aria-hidden
           >
-            TO
+            OG
           </span>
         </a>
       </div>
